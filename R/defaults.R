@@ -124,6 +124,10 @@ opts_chunk_attr = local({
   opts
 })
 
+register_options <- function(opts) {
+  opts_chunk_attr <<- merge_list(opts_chunk_attr, opts)
+}
+
 #' Set aliases for chunk options
 #'
 #' We do not have to use the chunk option names given in \pkg{knitr}; we can set
