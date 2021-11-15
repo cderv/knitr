@@ -5,6 +5,8 @@ id <- "e2de4e88-f37f-4dc5-b1dd-84451f777660" # clustermq special run by josh
 revdepcheck::cloud_summary(id)
 revdepcheck::cloud_report(id)
 
+cloud_res <- revdepcheck::cloud_results(id)
+
 files <- fs::dir_ls(glue::glue("revdep/cloud/{id}/"), glob = "*/dependency_install.log", recurse = TRUE)
 
 # Error 500
