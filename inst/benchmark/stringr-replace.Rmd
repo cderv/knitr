@@ -1,6 +1,8 @@
 ---
 title: Benchmark of stringr replacement
-output: github_document
+output: 
+  github_document:
+    toc: true
 ---
 
 # Context
@@ -397,3 +399,4 @@ res = bench::mark(
 summary(res, relative = TRUE)
 ggplot2::autoplot(res)
 ```
+
