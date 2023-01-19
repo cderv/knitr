@@ -742,6 +742,11 @@ stringr::str_locate(doc[i], b)
 After:
 
 ``` r
+location = function(x) {
+  len = attr(x, 'match.length')
+  if (length(x) == 1 && x == -1) x = integer()
+  cbind(start = x, end = x + len - 1L)
+}
 str_locate = function(x, pattern, all = TRUE) {
   out = (if (all) gregexpr else regexpr)(pattern, x, perl = TRUE)
   if (all) lapply(out, location) else location(out)
@@ -753,7 +758,11 @@ str_locate(doc[i], b, FALSE)
 b = knitr::all_patterns$html$header.begin
 doc = c("<head>", "<!--content-->", "</head>", "<body>", "</body>")
 i = grep(b, doc)
-location = knitr:::location
+location = function(x) {
+  len = attr(x, 'match.length')
+  if (length(x) == 1 && x == -1) x = integer()
+  cbind(start = x, end = x + len - 1L)
+}
 str_locate = function(x, pattern, all = TRUE) {
   out = (if (all) gregexpr else regexpr)(pattern, x, perl = TRUE)
   if (all) lapply(out, location) else location(out)
@@ -786,6 +795,11 @@ loc = stringr::str_locate_all(input, inline.code)[[1]]
 After:
 
 ``` r
+location = function(x) {
+  len = attr(x, 'match.length')
+  if (length(x) == 1 && x == -1) x = integer()
+  cbind(start = x, end = x + len - 1L)
+}
 str_locate = function(x, pattern, all = TRUE) {
   out = (if (all) gregexpr else regexpr)(pattern, x, perl = TRUE)
   if (all) lapply(out, location) else location(out)
@@ -825,6 +839,11 @@ loc = stringr::str_locate_all(txt, delim)[[1L]]
 After:
 
 ``` r
+location = function(x) {
+  len = attr(x, 'match.length')
+  if (length(x) == 1 && x == -1) x = integer()
+  cbind(start = x, end = x + len - 1L)
+}
 str_locate = function(x, pattern, all = TRUE) {
   out = (if (all) gregexpr else regexpr)(pattern, x, perl = TRUE)
   if (all) lapply(out, location) else location(out)
@@ -837,7 +856,11 @@ txt = 'This is the value of `x`: {{x}}'
 delim = c('{{', '}}')
 delim = gsub('([.|()\\^{}+$*?]|\\[|\\])', '\\\\\\1', delim)
 delim = paste0(delim[1L], '((.|\n)+?)', delim[2L])
-location = knitr:::location
+location = function(x) {
+  len = attr(x, 'match.length')
+  if (length(x) == 1 && x == -1) x = integer()
+  cbind(start = x, end = x + len - 1L)
+}
 str_locate = function(x, pattern, all = TRUE) {
   out = (if (all) gregexpr else regexpr)(pattern, x, perl = TRUE)
   if (all) lapply(out, location) else location(out)
@@ -911,3 +934,4 @@ res = bench::mark(
 summary(res, relative = TRUE)
 ggplot2::autoplot(res)
 ```
+
