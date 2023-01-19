@@ -364,6 +364,7 @@ doc[i] = str_replace(doc[i], l, paste0(tmp, make_header_latex(doc)))
 ```{r}
 b = knitr::all_patterns$tex$header.begin
 doc = c("\\documentclass[opt]{article}", "some tex content")
+i = grep(b, doc)
 l = stringr::str_locate(doc[i], b)
 ```
 
@@ -396,6 +397,137 @@ res = bench::mark(
   new = new_fun(doc, l, tmp, header),
   min_time = Inf
 )
+summary(res, relative = TRUE)
+ggplot2::autoplot(res)
+```
+
+## Variant replacement `str_insert()` instead or `str_replace()`
+
++-------------------------------------------------------------------------------------------+---------------------------------------------------+----------------------------------------------------------------------------------------------------------------------+
+| Commit                                                                                    | PR                                                | File                                                                                                                 |
++===========================================================================================+===================================================+======================================================================================================================+
+| [5a2cb72](https://github.com/yihui/knitr/commit/5a2cb72f63aa64b757418df99fc2ad3ef5292ac0) | [#2195](https://github.com/yihui/knitr/pull/2195) | [header.R#L59-L60](https://github.com/yihui/knitr/blob/5a2cb72f63aa64b757418df99fc2ad3ef5292ac0/R/header.R#L59-L60)\ |
+|                                                                                           |                                                   | [header.R#L90-L91](https://github.com/yihui/knitr/blob/5a2cb72f63aa64b757418df99fc2ad3ef5292ac0/R/header.R#L90-L91)  |
++-------------------------------------------------------------------------------------------+---------------------------------------------------+----------------------------------------------------------------------------------------------------------------------+
+
+Before:
+
+``` r
+tmp = stringr::str_sub(doc[i], l[, 1], l[, 2])
+stringr::str_sub(doc[i], l[,1], l[,2]) = paste0(tmp, '\n', make_header_html())
+```
+
+After :
+
+``` r
+doc[i] = str_insert(doc[i], l[, 2], paste0('\n', make_header_html()))
+```
+
+```{r}
+b = knitr::all_patterns$html$header.begin
+doc = c("<head>", "<!--content-->", "</head>", "<body>", "</body>")
+i = grep(b, doc)
+l = stringr::str_locate(doc[i], b)
+```
+
+```{r}
+header = knitr:::make_header_html()
+
+str_insert = function(x, i, value) {
+  if (i <= 0) return(paste0(value, x))
+  n = nchar(x)
+  if (n == 0 || i >= n) return(paste0(x, value))
+  paste0(substr(x, 1, i), value, substr(x, i + 1, n))
+}
+
+old_str_sub = function(doc, l, header) {
+  tmp = stringr::str_sub(doc[i], l[, 1], l[, 2])
+  stringr::str_sub(doc[i], l[,1], l[,2]) = paste0(tmp, header)
+  doc
+}
+
+new_str_replace = function(doc, l, header) {
+  tmp = substr(doc[i], l[, 1], l[, 2])
+  doc[i] = str_replace(doc[i], l, paste0(tmp, header))
+  doc
+}
+
+new_str_insert = function(doc, l, header) {
+  doc[i] = str_insert(doc[i], l[, 2], paste0('\n', header))
+  doc
+}
+
+res = bench::mark(
+  stringr = old_str_sub(doc, l, header),
+  str_replace = new_str_replace(doc, l, header),
+  str_insert = new_str_insert(doc, l, header),
+  min_time = Inf,
+  # we get a small difference in output
+  check = FALSE
+)
+summary(res, relative = TRUE)
+ggplot2::autoplot(res)
+```
+
+Special edge case here: Our replacement function is not completely equivalent.
+
+```{r}
+#| results: asis
+#| echo: false
+stringr = old_str_sub(doc, l, header)
+str_insert = new_str_insert(doc, l, header)
+i = which(str_insert != stringr)
+cat("* New version gives `", gsub("\\n", "\\\\n", str_insert[i]), "`\n")
+cat("* stringr version gives `", gsub("\\n", "\\\\n", stringr[i]), "`\n")
+```
+
+Before:
+
+``` r
+tmp = stringr::str_sub(doc[i], l[, 1], l[, 2])
+stringr::str_sub(doc[i], l[,1], l[,2]) = paste0(tmp, make_header_latex(doc))
+```
+
+After :
+
+``` r
+doc[i] = str_insert(doc[i], l[, 2], make_header_latex(doc))
+```
+
+```{r}
+b = knitr::all_patterns$tex$header.begin
+doc = c("\\documentclass[opt]{article}", "some tex content")
+i = grep(b, doc)
+l = stringr::str_locate(doc[i], b)
+```
+
+```{r}
+header = knitr:::make_header_latex(doc)
+
+old_str_sub = function(doc, l, header) {
+  tmp = stringr::str_sub(doc[i], l[, 1], l[, 2])
+  stringr::str_sub(doc[i], l[,1], l[,2]) = paste0(tmp, header)
+  doc
+}
+
+new_str_replace = function(doc, l, header) {
+  tmp = substr(doc[i], l[, 1], l[, 2])
+  doc[i] = str_replace(doc[i], l, paste0(tmp, header))
+  doc
+}
+
+new_str_insert = function(doc, l, header) {
+  doc[i] = str_insert(doc[i], l[, 2], header)
+  doc
+}
+
+res = bench::mark(
+  stringr = old_str_sub(doc, l, header),
+  str_replace = new_str_replace(doc, l, header),
+  str_insert = new_str_insert(doc, l, header),
+  min_time = Inf
+)
+
 summary(res, relative = TRUE)
 ggplot2::autoplot(res)
 ```
@@ -989,4 +1121,3 @@ res = bench::mark(
 summary(res, relative = TRUE)
 ggplot2::autoplot(res)
 ```
-
