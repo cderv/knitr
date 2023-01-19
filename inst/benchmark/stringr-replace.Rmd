@@ -597,3 +597,87 @@ res = bench::mark(
 summary(res, relative = TRUE)
 ggplot2::autoplot(res)
 ```
+
+## `stringr::str_count()`
+
++-------------------------------------------------------------------------------------------+---------------------------------------------------+-----------------------------------------------------------------------------------------------------------------------+
+| Commit                                                                                    | PR                                                | File                                                                                                                  |
++===========================================================================================+===================================================+=======================================================================================================================+
+| [1a0f2cc](https://github.com/yihui/knitr/commit/1a0f2cc269c6a7f86f10b77d12229a80c14d6ee6) | [#2202](https://github.com/yihui/knitr/pull/2202) | [utils.R#L583-L590](https://github.com/yihui/knitr/blob/1a0f2cc269c6a7f86f10b77d12229a80c14d6ee6/R/utils.R#L583-L590) |
++-------------------------------------------------------------------------------------------+---------------------------------------------------+-----------------------------------------------------------------------------------------------------------------------+
+
+Before:
+
+```{r}
+line_count_str = function(x) stringr::str_count(x, '\n') + 1L
+```
+
+After:
+
+```{r}
+line_count = function(x) {
+  res = gregexpr('\n', x, fixed = TRUE)
+  unlist(lapply(res, function(x) {
+    n = length(x)
+    if (n == 1 && x == -1) n = 0
+    n + 1
+  }))
+}
+```
+
+```{r}
+text = xfun::read_utf8(knitr_example("knitr-spin.Rmd"))
+```
+
+```{r}
+res = bench::mark(
+  stringr = line_count_str(text),
+  new = line_count(text),
+  min_time = Inf
+)
+summary(res, relative = TRUE)
+ggplot2::autoplot(res)
+```
+
+## `stringr::str_extract_all`
+
++-------------------------------------------------------------------------------------------+---------------------------------------------------+-------------------------------------------------------------------------------------------------------------+
+| Commit                                                                                    | PR                                                | File                                                                                                        |
++===========================================================================================+===================================================+=============================================================================================================+
+| [cc3b92a](https://github.com/yihui/knitr/commit/cc3b92a9f1c591a3424383e691349fdb4588d328) | [#2205](https://github.com/yihui/knitr/pull/2205) | [block.R#L587](https://github.com/yihui/knitr/blob/cc3b92a9f1c591a3424383e691349fdb4588d328/R/block.R#L587) |
++-------------------------------------------------------------------------------------------+---------------------------------------------------+-------------------------------------------------------------------------------------------------------------+
+
+Before:
+
+``` r
+eval(parse_only(unlist(stringr::str_extract_all(code, 'read_chunk\\(([^)]+)\\)'))))
+```
+
+After:
+
+``` r
+str_extract = function(x, pattern) {
+  m = gregexpr(pattern, x, perl = TRUE)
+  regmatches(x, m)
+}
+eval(parse_only(unlist(str_extract(code, 'read_chunk\\(([^)]+)\\)'))))
+```
+
+```{r}
+code = "knitr::read_chunk('113-foo.R')"
+```
+
+```{r}
+str_extract = function(x, pattern) {
+  m = gregexpr(pattern, x, perl = TRUE)
+  regmatches(x, m)
+}
+res = bench::mark(
+  stringr = stringr::str_extract_all(code, 'read_chunk\\(([^)]+)\\)'),
+  new = str_extract(code, 'read_chunk\\(([^)]+)\\)'),
+  min_time = Inf
+)
+summary(res, relative = TRUE)
+ggplot2::autoplot(res)
+```
+
