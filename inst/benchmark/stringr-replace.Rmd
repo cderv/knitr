@@ -788,7 +788,6 @@ ggplot2::autoplot(res)
 Before:
 
 ``` r
-loc = str_locate(input, inline.code)[[1]]
 loc = stringr::str_locate_all(input, inline.code)[[1]]
 ```
 
@@ -816,6 +815,62 @@ inline.code = knitr:::all_patterns$md$inline.code
 res = bench::mark(
   stringr = stringr::str_locate_all(input, inline.code),
   new = str_locate(input, inline.code),
+  min_time = Inf
+)
+summary(res, relative = TRUE)
+ggplot2::autoplot(res)
+```
+
++-------------------------------------------------------------------------------------------+---------------------------------------------------+-----------------------------------------------------------------------------------------------------------+
+| Commit                                                                                    | PR                                                | File                                                                                                      |
++===========================================================================================+===================================================+===========================================================================================================+
+| [cc3b92a](https://github.com/yihui/knitr/commit/cc3b92a9f1c591a3424383e691349fdb4588d328) | [#2205](https://github.com/yihui/knitr/pull/2205) | [utils.R#L94](https://github.com/yihui/knitr/blob/cc3b92a9f1c591a3424383e691349fdb4588d328/R/utils.R#L94) |
++-------------------------------------------------------------------------------------------+---------------------------------------------------+-----------------------------------------------------------------------------------------------------------+
+
+Before:
+
+``` r
+idx = stringr::str_locate(txt, hb) # locate documentclass
+```
+
+After:
+
+``` r
+location = function(x) {
+  len = attr(x, 'match.length')
+  if (length(x) == 1 && x == -1) x = integer()
+  cbind(start = x, end = x + len - 1L)
+}
+str_locate = function(x, pattern, all = TRUE) {
+  out = (if (all) gregexpr else regexpr)(pattern, x, perl = TRUE)
+  if (all) lapply(out, location) else location(out)
+}
+idx = str_locate(txt, hb, FALSE) # locate documentclass
+```
+
+```{r}
+input = xfun::read_utf8(knitr_example("child/knitr-main.Rnw"))
+patterns = knitr:::all_patterns$tex
+db = patterns$document.begin
+hb = patterns$header.begin
+idx2 = grep(db, input)[1]
+idx1 = grep(hb, input)[1]
+txt = one_string(input[idx1:(idx2 - 1L)])
+```
+
+```{r}
+location = function(x) {
+  len = attr(x, 'match.length')
+  if (length(x) == 1 && x == -1) x = integer()
+  cbind(start = x, end = x + len - 1L)
+}
+str_locate = function(x, pattern, all = TRUE) {
+  out = (if (all) gregexpr else regexpr)(pattern, x, perl = TRUE)
+  if (all) lapply(out, location) else location(out)
+}
+res = bench::mark(
+  stringr = stringr::str_locate(txt, hb),
+  new = str_locate(txt, hb, FALSE),
   min_time = Inf
 )
 summary(res, relative = TRUE)
