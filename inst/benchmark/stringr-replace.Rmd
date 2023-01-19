@@ -764,3 +764,49 @@ res = bench::mark(
 summary(res, relative = TRUE)
 ggplot2::autoplot(res)
 ```
+
+## `stringr::str_locate_all()`
+
++-------------------------------------------------------------------------------------------+---------------------------------------------------+-------------------------------------------------------------------------------------------------------------------+
+| Commit                                                                                    | PR                                                | File                                                                                                              |
++===========================================================================================+===================================================+===================================================================================================================+
+| [cc3b92a](https://github.com/yihui/knitr/commit/cc3b92a9f1c591a3424383e691349fdb4588d328) | [#2205](https://github.com/yihui/knitr/pull/2205) | [template.R#L121](https://github.com/yihui/knitr/blob/cc3b92a9f1c591a3424383e691349fdb4588d328/R/template.R#L121) |
++-------------------------------------------------------------------------------------------+---------------------------------------------------+-------------------------------------------------------------------------------------------------------------------+
+
+Before:
+
+``` r
+loc = stringr::str_locate_all(txt, delim)[[1L]]
+```
+
+After:
+
+``` r
+str_locate = function(x, pattern, all = TRUE) {
+  out = (if (all) gregexpr else regexpr)(pattern, x, perl = TRUE)
+  if (all) lapply(out, location) else location(out)
+}
+loc = str_locate(txt, delim)[[1L]]
+```
+
+```{r}
+txt = 'This is the value of `x`: {{x}}'
+delim = c('{{', '}}')
+delim = gsub('([.|()\\^{}+$*?]|\\[|\\])', '\\\\\\1', delim)
+delim = paste0(delim[1L], '((.|\n)+?)', delim[2L])
+location = knitr:::location
+str_locate = function(x, pattern, all = TRUE) {
+  out = (if (all) gregexpr else regexpr)(pattern, x, perl = TRUE)
+  if (all) lapply(out, location) else location(out)
+}
+```
+
+```{r}
+res = bench::mark(
+  stringr = stringr::str_locate_all(txt, delim),
+  new = str_locate(txt, delim),
+  min_time = Inf
+)
+summary(res, relative = TRUE)
+ggplot2::autoplot(res)
+```
