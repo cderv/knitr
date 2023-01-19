@@ -681,3 +681,86 @@ summary(res, relative = TRUE)
 ggplot2::autoplot(res)
 ```
 
+## `stringr::str_locate()`
+
++-------------------------------------------------------------------------------------------+---------------------------------------------------+--------------------------------------------------------------------------------------------------------------+
+| Commit                                                                                    | PR                                                | File                                                                                                         |
++===========================================================================================+===================================================+==============================================================================================================+
+| [cc3b92a](https://github.com/yihui/knitr/commit/cc3b92a9f1c591a3424383e691349fdb4588d328) | [#2205](https://github.com/yihui/knitr/pull/2205) | [header.R#L58](https://github.com/yihui/knitr/blob/cc3b92a9f1c591a3424383e691349fdb4588d328/R/header.R#L58)\ |
+|                                                                                           |                                                   | [header.R#L89](https://github.com/yihui/knitr/blob/cc3b92a9f1c591a3424383e691349fdb4588d328/R/header.R#L89)  |
++-------------------------------------------------------------------------------------------+---------------------------------------------------+--------------------------------------------------------------------------------------------------------------+
+
+Before:
+
+``` r
+stringr::str_locate(doc[i], b)
+```
+
+After:
+
+``` r
+str_locate = function(x, pattern, all = TRUE) {
+  out = (if (all) gregexpr else regexpr)(pattern, x, perl = TRUE)
+  if (all) lapply(out, location) else location(out)
+}
+str_locate(doc[i], b, FALSE)
+```
+
+```{r}
+b = knitr::all_patterns$html$header.begin
+doc = c("<head>", "<!--content-->", "</head>", "<body>", "</body>")
+i = grep(b, doc)
+location = knitr:::location
+str_locate = function(x, pattern, all = TRUE) {
+  out = (if (all) gregexpr else regexpr)(pattern, x, perl = TRUE)
+  if (all) lapply(out, location) else location(out)
+}
+```
+
+```{r}
+res = bench::mark(
+  stringr = stringr::str_locate(doc[i], b),
+  new = str_locate(doc[i], b, FALSE),
+  min_time = Inf
+)
+summary(res, relative = TRUE)
+ggplot2::autoplot(res)
+```
+
++-------------------------------------------------------------------------------------------+---------------------------------------------------+---------------------------------------------------------------------------------------------------------------+
+| Commit                                                                                    | PR                                                | File                                                                                                          |
++===========================================================================================+===================================================+===============================================================================================================+
+| [cc3b92a](https://github.com/yihui/knitr/commit/cc3b92a9f1c591a3424383e691349fdb4588d328) | [#2205](https://github.com/yihui/knitr/pull/2205) | [parser.R#L358](https://github.com/yihui/knitr/blob/cc3b92a9f1c591a3424383e691349fdb4588d328/R/parser.R#L358) |
++-------------------------------------------------------------------------------------------+---------------------------------------------------+---------------------------------------------------------------------------------------------------------------+
+
+Before:
+
+``` r
+loc = str_locate(input, inline.code)[[1]]
+loc = stringr::str_locate_all(input, inline.code)[[1]]
+```
+
+After:
+
+``` r
+str_locate = function(x, pattern, all = TRUE) {
+  out = (if (all) gregexpr else regexpr)(pattern, x, perl = TRUE)
+  if (all) lapply(out, location) else location(out)
+}
+loc = str_locate(input, inline.code)[[1]]
+```
+
+```{r}
+input = 'Inline expressions such as `r "the following"`'
+inline.code = knitr:::all_patterns$md$inline.code
+```
+
+```{r}
+res = bench::mark(
+  stringr = stringr::str_locate_all(input, inline.code),
+  new = str_locate(input, inline.code),
+  min_time = Inf
+)
+summary(res, relative = TRUE)
+ggplot2::autoplot(res)
+```
