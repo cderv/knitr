@@ -853,3 +853,61 @@ res = bench::mark(
 summary(res, relative = TRUE)
 ggplot2::autoplot(res)
 ```
+
+## `stringr::str_match_all()`
+
++-------------------------------------------------------------------------------------------+---------------------------------------------------+---------------------------------------------------------------------------------------------------------------+
+| Commit                                                                                    | PR                                                | File                                                                                                          |
++===========================================================================================+===================================================+===============================================================================================================+
+| [cc3b92a](https://github.com/yihui/knitr/commit/cc3b92a9f1c591a3424383e691349fdb4588d328) | [#2205](https://github.com/yihui/knitr/pull/2205) | [parser.R#L360](https://github.com/yihui/knitr/blob/cc3b92a9f1c591a3424383e691349fdb4588d328/R/parser.R#L360) |
++-------------------------------------------------------------------------------------------+---------------------------------------------------+---------------------------------------------------------------------------------------------------------------+
+
+Before:
+
+``` r
+code = stringr::str_match_all(input, inline.code)[[1L]]
+```
+
+After:
+
+``` r
+str_match = function(x, pattern) {
+  # gregexec() was added in R 4.1.0; for lower versions of R, use fallback
+  if (is.function(gregexec <- baseenv()[['gregexec']])) {
+    m = gregexec(pattern, x, perl = TRUE)
+  } else {
+    x = unlist(str_extract(x, pattern))
+    m = regexec(pattern, x, perl = TRUE)
+  }
+  do.call(cbind, regmatches(x, m))
+}
+code = t(str_match(input, inline.code))
+```
+
+```{r}
+input = 'Inline expressions such as `r "the following"`'
+inline.code = knitr:::all_patterns$md$inline.code
+str_match = function(x, pattern) {
+  if (is.function(gregexec <- baseenv()[['gregexec']])) {
+    m = gregexec(pattern, x, perl = TRUE)
+  } else {
+    x = unlist(str_extract(x, pattern))
+    m = regexec(pattern, x, perl = TRUE)
+  }
+  do.call(cbind, regmatches(x, m))
+}
+```
+
+```{r}
+res = bench::mark(
+  stringr = { 
+    code = stringr::str_match_all(input, inline.code)[[1L]]
+    code[is.na(code)] = ''
+    code
+  },
+  new = t(str_match(input, inline.code)),
+  min_time = Inf
+)
+summary(res, relative = TRUE)
+ggplot2::autoplot(res)
+```
