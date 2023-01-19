@@ -563,3 +563,37 @@ i = which(new != stringr)
 cat("* New version gives `", gsub("\\n", "\\\\n", new[i]), "`\n")
 cat("* stringr version gives `", gsub("\\n", "\\\\n", stringr[i]), "`\n")
 ```
+
+## `stringr::str_pad()`
+
++-------------------------------------------------------------------------------------------+---------------------------------------------------+-------------------------------------------------------------------------------------------------------------+
+| Commit                                                                                    | PR                                                | File                                                                                                        |
++===========================================================================================+===================================================+=============================================================================================================+
+| [1a0f2cc](https://github.com/yihui/knitr/commit/1a0f2cc269c6a7f86f10b77d12229a80c14d6ee6) | [#2202](https://github.com/yihui/knitr/pull/2202) | [block.R#L619](https://github.com/yihui/knitr/blob/1a0f2cc269c6a7f86f10b77d12229a80c14d6ee6/R/block.R#L619) |
++-------------------------------------------------------------------------------------------+---------------------------------------------------+-------------------------------------------------------------------------------------------------------------+
+
+Before:
+
+``` r
+paste0('## ----', stringr::str_pad(label, max(getOption('width') - 11L, 0L), 'right', '-'), '----', code)
+```
+
+After:
+
+``` r
+paste0('## ----', label, strrep('-', max(getOption('width') - 11L - nchar(label), 0L)), '----', code)
+```
+
+```{r}
+label = "my-first-chunk"
+```
+
+```{r}
+res = bench::mark(
+  stringr = paste0('## ----', stringr::str_pad(label, max(getOption('width') - 11L, 0L), 'right', '-'), '----'),
+  new = paste0('## ----', label, strrep('-', max(getOption('width') - 11L - nchar(label), 0L)), '----'),
+  min_time = Inf
+)
+summary(res, relative = TRUE)
+ggplot2::autoplot(res)
+```
