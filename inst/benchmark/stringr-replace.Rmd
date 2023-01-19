@@ -475,9 +475,9 @@ Special edge case here: Our replacement function is not completely equivalent.
 #| results: asis
 #| echo: false
 stringr = old_str_sub(doc, l, header)
-str_insert = new_str_insert(doc, l, header)
-i = which(str_insert != stringr)
-cat("* New version gives `", gsub("\\n", "\\\\n", str_insert[i]), "`\n")
+new = new_str_insert(doc, l, header)
+i = which(new != stringr)
+cat("* New version gives `", gsub("\\n", "\\\\n", new[i]), "`\n")
 cat("* stringr version gives `", gsub("\\n", "\\\\n", stringr[i]), "`\n")
 ```
 
@@ -987,7 +987,7 @@ db = patterns$document.begin
 hb = patterns$header.begin
 idx2 = grep(db, input)[1]
 idx1 = grep(hb, input)[1]
-txt = one_string(input[idx1:(idx2 - 1L)])
+txt = knitr:::one_string(input[idx1:(idx2 - 1L)])
 ```
 
 ```{r}
