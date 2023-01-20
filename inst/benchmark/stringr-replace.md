@@ -119,8 +119,8 @@ summary(res, relative = TRUE)
     ## # A tibble: 2 × 6
     ##   expression   min median `itr/sec` mem_alloc `gc/sec`
     ##   <bch:expr> <dbl>  <dbl>     <dbl>     <dbl>    <dbl>
-    ## 1 stringr     1.42   1.47      1        1226.     5.31
-    ## 2 new         1      1         1.51        1      1
+    ## 1 stringr     1.29   1.38      1        1226.     5.99
+    ## 2 new         1      1         1.34        1      1
 
 ``` r
 ggplot2::autoplot(res)
@@ -192,8 +192,8 @@ summary(res, relative = TRUE)
     ## # A tibble: 2 × 6
     ##   expression   min median `itr/sec` mem_alloc `gc/sec`
     ##   <bch:expr> <dbl>  <dbl>     <dbl>     <dbl>    <dbl>
-    ## 1 stringr     1      1         2.43       Inf     8.11
-    ## 2 new         2.54   2.53      1          NaN     1
+    ## 1 stringr     1      1         2.33       Inf     7.76
+    ## 2 new         2.48   2.54      1          NaN     1
 
 ``` r
 ggplot2::autoplot(res)
@@ -232,8 +232,8 @@ summary(res, relative = TRUE)
     ## # A tibble: 2 × 6
     ##   expression   min median `itr/sec` mem_alloc `gc/sec`
     ##   <bch:expr> <dbl>  <dbl>     <dbl>     <dbl>    <dbl>
-    ## 1 stringr     1      1         2.44       Inf     8.15
-    ## 2 new         2.53   2.55      1          NaN     1
+    ## 1 stringr     1      1         2.32       Inf     7.74
+    ## 2 new         2.47   2.48      1          NaN     1
 
 ``` r
 ggplot2::autoplot(res)
@@ -243,9 +243,9 @@ ggplot2::autoplot(res)
 
 ## `stringr::str_dup()`
 
-| Commit                                                                                    | PR                                                 | File                                                                                                            |
-|-------------------------------------------------------------------------------------------|----------------------------------------------------|-----------------------------------------------------------------------------------------------------------------|
-| [1ce8286](https://github.com/yihui/knitr/commit/1ce82862b689338ce275269056ebfcc96eb975ca) | [\#2186](https://github.com/yihui/knitr/pull/2186) | [parser.R#L3488](https://github.com/yihui/knitr/blob/1ce82862b689338ce275269056ebfcc96eb975ca/R/parser.R#L3488) |
+| Commit                                                                                    | PR                                                 | File                                                                                                             |
+|-------------------------------------------------------------------------------------------|----------------------------------------------------|------------------------------------------------------------------------------------------------------------------|
+| [1ce8286](https://github.com/yihui/knitr/commit/1ce82862b689338ce275269056ebfcc96eb975ca) | [\#2186](https://github.com/yihui/knitr/pull/2186) | [parser.R#L348](https://github.com/yihui/knitr/blob/1ce82862b689338ce275269056ebfcc96eb975ca/R/parser.R#L348) \| |
 
 Before:
 
@@ -272,14 +272,23 @@ summary(res, relative = TRUE)
     ## # A tibble: 2 × 6
     ##   expression   min median `itr/sec` mem_alloc `gc/sec`
     ##   <bch:expr> <dbl>  <dbl>     <dbl>     <dbl>    <dbl>
-    ## 1 stringr     1      1         1.15      5.96      Inf
-    ## 2 new         1.21   1.15      1         1         NaN
+    ## 1 stringr     1      1         1.20      5.96      Inf
+    ## 2 new         1.17   1.14      1         1         NaN
 
 ``` r
 ggplot2::autoplot(res)
 ```
 
 ![](stringr-replace_files/figure-gfm/unnamed-chunk-8-1.png)<!-- -->
+
+Later, usage of `stringr::str_dup()` and its replacement `rep_str()`
+have been removed completely in
+(<https://github.com/yihui/knitr/commit/0efb7914a1be93460e510bb283f9d4d72c49b360>)
+as code was simplified in
+<https://github.com/yihui/knitr/commit/07bf3adf49f67bd528be4e6a60b3284a7ea6f8a9>
+and
+<https://github.com/yihui/knitr/commit/7ef7be00711de949fcf2a299d6381189669bb753>
+so no more impact.
 
 ## `stringr::str_split()`
 
@@ -352,8 +361,8 @@ summary(res, relative = TRUE)
     ## # A tibble: 2 × 6
     ##   expression   min median `itr/sec` mem_alloc `gc/sec`
     ##   <bch:expr> <dbl>  <dbl>     <dbl>     <dbl>    <dbl>
-    ## 1 stringr     2.51   2.45      1         2.38     1   
-    ## 2 new         1      1         2.32      1        1.16
+    ## 1 stringr     2.48   2.48      1         2.38     1   
+    ## 2 new         1      1         2.38      1        1.19
 
 ``` r
 ggplot2::autoplot(res)
@@ -449,8 +458,8 @@ summary(res, relative = TRUE)
     ## # A tibble: 2 × 6
     ##   expression   min median `itr/sec` mem_alloc `gc/sec`
     ##   <bch:expr> <dbl>  <dbl>     <dbl>     <dbl>    <dbl>
-    ## 1 stringr     1      1         1.36      9.19     1.36
-    ## 2 new         1.23   1.24      1         1        1
+    ## 1 stringr     1      1         1.21      9.19     1.21
+    ## 2 new         1.25   1.20      1         1        1
 
 ``` r
 ggplot2::autoplot(res)
@@ -517,8 +526,8 @@ summary(res, relative = TRUE)
     ## # A tibble: 2 × 6
     ##   expression   min median `itr/sec` mem_alloc `gc/sec`
     ##   <bch:expr> <dbl>  <dbl>     <dbl>     <dbl>    <dbl>
-    ## 1 stringr     3.77   3.53      1          Inf     1   
-    ## 2 new         1      1         3.73       NaN     3.73
+    ## 1 stringr     3.48   3.45      1          Inf     1   
+    ## 2 new         1      1         3.59       NaN     3.59
 
 ``` r
 ggplot2::autoplot(res)
@@ -551,8 +560,8 @@ summary(res, relative = TRUE)
     ## # A tibble: 2 × 6
     ##   expression   min median `itr/sec` mem_alloc `gc/sec`
     ##   <bch:expr> <dbl>  <dbl>     <dbl>     <dbl>    <dbl>
-    ## 1 stringr     1      1         1.14       Inf     1   
-    ## 2 new         1.16   1.16      1          NaN     1.32
+    ## 1 stringr     1      1         1.13       Inf     1   
+    ## 2 new         1.19   1.17      1          NaN     1.33
 
 ``` r
 ggplot2::autoplot(res)
@@ -593,8 +602,8 @@ summary(res, relative = TRUE)
     ## # A tibble: 2 × 6
     ##   expression   min median `itr/sec` mem_alloc `gc/sec`
     ##   <bch:expr> <dbl>  <dbl>     <dbl>     <dbl>    <dbl>
-    ## 1 stringr     3.55   3.42      1          Inf     1   
-    ## 2 new         1      1         3.48       NaN     3.48
+    ## 1 stringr     3.55   3.39      1          Inf     1   
+    ## 2 new         1      1         3.42       NaN     3.42
 
 ``` r
 ggplot2::autoplot(res)
@@ -627,8 +636,8 @@ summary(res, relative = TRUE)
     ## # A tibble: 2 × 6
     ##   expression   min median `itr/sec` mem_alloc `gc/sec`
     ##   <bch:expr> <dbl>  <dbl>     <dbl>     <dbl>    <dbl>
-    ## 1 stringr     1      1         1.23       Inf     1   
-    ## 2 new         1.22   1.25      1          NaN     1.22
+    ## 1 stringr     1      1         1.20       Inf     1   
+    ## 2 new         1.25   1.25      1          NaN     1.25
 
 ``` r
 ggplot2::autoplot(res)
@@ -725,9 +734,9 @@ summary(res, relative = TRUE)
     ## # A tibble: 3 × 6
     ##   expression    min median `itr/sec` mem_alloc `gc/sec`
     ##   <bch:expr>  <dbl>  <dbl>     <dbl>     <dbl>    <dbl>
-    ## 1 stringr      2.89   2.86      1          Inf     1.06
-    ## 2 str_replace  2.40   2.45      1.19       NaN     1.69
-    ## 3 str_insert   1      1         2.83       NaN     1
+    ## 1 stringr      2.81   2.74      1          Inf     1.28
+    ## 2 str_replace  2.47   2.41      1.11       NaN     1.89
+    ## 3 str_insert   1      1         2.34       NaN     1
 
 ``` r
 ggplot2::autoplot(res)
@@ -794,9 +803,9 @@ summary(res, relative = TRUE)
     ## # A tibble: 3 × 6
     ##   expression    min median `itr/sec` mem_alloc `gc/sec`
     ##   <bch:expr>  <dbl>  <dbl>     <dbl>     <dbl>    <dbl>
-    ## 1 stringr      3.24   3.23      1          Inf      Inf
-    ## 2 str_replace  2.93   2.89      1.16       NaN      Inf
-    ## 3 str_insert   1      1         3.35       NaN      NaN
+    ## 1 stringr      3.34   3.31      1          Inf      Inf
+    ## 2 str_replace  3.05   3.02      1.14       NaN      Inf
+    ## 3 str_insert   1      1         3.44       NaN      NaN
 
 ``` r
 ggplot2::autoplot(res)
@@ -839,8 +848,8 @@ summary(res, relative = TRUE)
     ## # A tibble: 2 × 6
     ##   expression   min median `itr/sec` mem_alloc `gc/sec`
     ##   <bch:expr> <dbl>  <dbl>     <dbl>     <dbl>    <dbl>
-    ## 1 stringr     1      1         2.08      76.1      Inf
-    ## 2 new         2.16   2.16      1          1        NaN
+    ## 1 stringr     1      1         2.13      76.1      Inf
+    ## 2 new         2.20   2.24      1          1        NaN
 
 ``` r
 ggplot2::autoplot(res)
@@ -911,8 +920,8 @@ summary(res, relative = TRUE)
     ## # A tibble: 2 × 6
     ##   expression   min median `itr/sec` mem_alloc `gc/sec`
     ##   <bch:expr> <dbl>  <dbl>     <dbl>     <dbl>    <dbl>
-    ## 1 stringr     1      1         5.06      1.74     4.60
-    ## 2 new         5.11   5.37      1         1        1
+    ## 1 stringr     1      1         5.20      1.74     4.87
+    ## 2 new         5.12   5.48      1         1        1
 
 ``` r
 ggplot2::autoplot(res)
@@ -967,8 +976,8 @@ summary(res, relative = TRUE)
     ## # A tibble: 2 × 6
     ##   expression   min median `itr/sec` mem_alloc `gc/sec`
     ##   <bch:expr> <dbl>  <dbl>     <dbl>     <dbl>    <dbl>
-    ## 1 stringr     1      1         2.19       Inf     2.41
-    ## 2 new         2.18   2.24      1          NaN     1
+    ## 1 stringr     1      1         2.12       Inf     2.33
+    ## 2 new         2.14   2.23      1          NaN     1
 
 ``` r
 ggplot2::autoplot(res)
@@ -1018,8 +1027,8 @@ summary(res, relative = TRUE)
     ## # A tibble: 2 × 6
     ##   expression   min median `itr/sec` mem_alloc `gc/sec`
     ##   <bch:expr> <dbl>  <dbl>     <dbl>     <dbl>    <dbl>
-    ## 1 stringr     12.1   12.1       1         Inf     1.01
-    ## 2 new          1      1        12.9       NaN     1
+    ## 1 stringr     13.0   12.9       1         Inf     1   
+    ## 2 new          1      1        13.9       NaN     1.16
 
 ``` r
 ggplot2::autoplot(res)
@@ -1068,8 +1077,8 @@ summary(res, relative = TRUE)
     ## # A tibble: 2 × 6
     ##   expression   min median `itr/sec` mem_alloc `gc/sec`
     ##   <bch:expr> <dbl>  <dbl>     <dbl>     <dbl>    <dbl>
-    ## 1 stringr     1      1         2.84       1        1  
-    ## 2 new         2.22   3.12      1         23.7     39.9
+    ## 1 stringr     1      1         2.83       1        1  
+    ## 2 new         2.27   2.97      1         23.7     18.4
 
 ``` r
 ggplot2::autoplot(res)
@@ -1119,8 +1128,8 @@ summary(res, relative = TRUE)
     ## # A tibble: 2 × 6
     ##   expression   min median `itr/sec` mem_alloc `gc/sec`
     ##   <bch:expr> <dbl>  <dbl>     <dbl>     <dbl>    <dbl>
-    ## 1 stringr     1      1         3.73      1        1.87
-    ## 2 new         3.62   3.87      1         4.83     1
+    ## 1 stringr     1      1         3.75      1        1.50
+    ## 2 new         3.81   3.98      1         4.83     1
 
 ``` r
 ggplot2::autoplot(res)
@@ -1171,8 +1180,8 @@ summary(res, relative = TRUE)
     ## # A tibble: 2 × 6
     ##   expression   min median `itr/sec` mem_alloc `gc/sec`
     ##   <bch:expr> <dbl>  <dbl>     <dbl>     <dbl>    <dbl>
-    ## 1 stringr     1      1         3.66       1       1   
-    ## 2 new         3.85   3.97      1         93.8     1.09
+    ## 1 stringr     1      1         4.06       1       1.35
+    ## 2 new         4.01   4.30      1         93.8     1
 
 ``` r
 ggplot2::autoplot(res)
@@ -1256,8 +1265,8 @@ summary(res, relative = TRUE)
     ## # A tibble: 2 × 6
     ##   expression   min median `itr/sec` mem_alloc `gc/sec`
     ##   <bch:expr> <dbl>  <dbl>     <dbl>     <dbl>    <dbl>
-    ## 1 stringr     1      1         3.33       1       6.65
-    ## 2 new         3.42   3.54      1         75.8     1
+    ## 1 stringr     1      1         3.59       1       7.17
+    ## 2 new         3.55   3.74      1         75.8     1
 
 ``` r
 ggplot2::autoplot(res)
@@ -1307,8 +1316,8 @@ summary(res, relative = TRUE)
     ## # A tibble: 2 × 6
     ##   expression   min median `itr/sec` mem_alloc `gc/sec`
     ##   <bch:expr> <dbl>  <dbl>     <dbl>     <dbl>    <dbl>
-    ## 1 stringr     1      1         3.13      1        1   
-    ## 2 new         3.30   3.24      1         1.63     1.28
+    ## 1 stringr     1      1         3.05      1        1   
+    ## 2 new         3.22   3.30      1         1.63     2.30
 
 ``` r
 ggplot2::autoplot(res)
@@ -1372,8 +1381,8 @@ summary(res, relative = TRUE)
     ## # A tibble: 2 × 6
     ##   expression   min median `itr/sec` mem_alloc `gc/sec`
     ##   <bch:expr> <dbl>  <dbl>     <dbl>     <dbl>    <dbl>
-    ## 1 stringr     1      1         3.20       Inf     6.40
-    ## 2 new         3.12   3.39      1          NaN     1
+    ## 1 stringr     1      1         3.22       Inf     6.44
+    ## 2 new         3.17   3.36      1          NaN     1
 
 ``` r
 ggplot2::autoplot(res)
@@ -1436,8 +1445,8 @@ summary(res, relative = TRUE)
     ## # A tibble: 2 × 6
     ##   expression   min median `itr/sec` mem_alloc `gc/sec`
     ##   <bch:expr> <dbl>  <dbl>     <dbl>     <dbl>    <dbl>
-    ## 1 stringr     1      1         3.72       1       1.24
-    ## 2 new         3.78   3.91      1         93.8     1
+    ## 1 stringr     1      1         3.81       1       1   
+    ## 2 new         3.85   3.96      1         93.8     1.05
 
 ``` r
 ggplot2::autoplot(res)
@@ -1503,8 +1512,8 @@ summary(res, relative = TRUE)
     ## # A tibble: 2 × 6
     ##   expression   min median `itr/sec` mem_alloc `gc/sec`
     ##   <bch:expr> <dbl>  <dbl>     <dbl>     <dbl>    <dbl>
-    ## 1 stringr     1      1         4.32      1        1   
-    ## 2 new         4.33   4.52      1         6.75     1.27
+    ## 1 stringr     1      1         4.45      1        1.11
+    ## 2 new         4.26   4.75      1         6.75     1
 
 ``` r
 ggplot2::autoplot(res)
