@@ -169,6 +169,8 @@ summary(res, relative = TRUE)
 ggplot2::autoplot(res)
 ```
 
+Later, usage of `stringr::str_dup()` and its replacement `rep_str()` have been removed completely in  (https://github.com/yihui/knitr/commit/0efb7914a1be93460e510bb283f9d4d72c49b360) as code was simplified in https://github.com/yihui/knitr/commit/07bf3adf49f67bd528be4e6a60b3284a7ea6f8a9 and https://github.com/yihui/knitr/commit/7ef7be00711de949fcf2a299d6381189669bb753 so no more impact. 
+
 ## `stringr::str_split()`
 
 +------------------------------------------------------------------------------------------+---------------------------------------------------+---------------------------------------------------------------------------------------------------------------+
