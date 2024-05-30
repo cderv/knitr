@@ -13,6 +13,7 @@ id <- "e2de4e88-f37f-4dc5-b1dd-84451f777660" # 08/11/2021
 id <- "0c961f35-f5a8-423f-91ef-446a22cd4aa6" # Re running only the 5 that are timeout
 id <- "fe5698a2-595d-40f3-9d1d-ec64d25b334f" # 15/11/2021 running with different spot instance
 id <- "5c39cf12-5dc4-4184-9a67-e5ca6c8ad422" # 15/11/2021 with updated knitr
+id <- "eb815a4a-ac2e-42fe-ae6c-b4708f7314b9" # 28/05/2024 knitr 1.47
 cloud_url <- modify_url(cloud_url, path = glue::glue("staging/check/{id}"))
 auth_header <- add_headers('x-api-key' = Sys.getenv("RSTUDIO_CLOUD_REVDEP_KEY"))
 
@@ -34,7 +35,7 @@ as.period(ymd_hms(res_time$finished_timestamp) - ymd_hms(res_time$created_timest
 
 res <- GET(glue::glue("{cloud_url}/status"), auth_header)
 res <- content(res, as = "text")
-jqr::jq(res)
+jqr::jq(jqr::index(res))
 
 res <- GET(glue::glue("{cloud_url}/status/SUCCEEDED"), auth_header)
 res <- content(res, as = "text")
@@ -52,7 +53,7 @@ dput(pkgs_failed)
 reasons <- purrr::map(purrr::set_names(pkgs_failed), ~ {
   res <- GET(glue::glue("{cloud_url}/packages/{.x}"), auth_header)
   res <- content(res, as = "text")
-  res <- jqr::jq(res, ".attempts[].statusReason")
+  res <- jqr::jq(res, '.statusReason')
   jsonlite::parse_json(res, simplifyVector = TRUE)
 })
 
@@ -71,7 +72,7 @@ pkg <- pkgs_failed[1]
 pkg <- "clustermq"
 res <- GET(glue::glue("{cloud_url}/packages/{pkg}"), auth_header)
 res <- content(res, as = "text")
-res <- jqr::jq(res)
+res <- jqr::jq(res, ".")
 res
 
 # Download ----------------------------------------------------------------

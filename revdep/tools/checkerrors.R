@@ -1,6 +1,4 @@
-id <- "944b7c92-758a-4f92-89ca-55e2ece9753a"
-
-id <- "e2de4e88-f37f-4dc5-b1dd-84451f777660" # clustermq special run by josh
+id <- "eb815a4a-ac2e-42fe-ae6c-b4708f7314b9"
 
 revdepcheck::cloud_summary(id)
 revdepcheck::cloud_report(id)
@@ -14,9 +12,11 @@ res <- purrr::map(files, ~ {
   content <- xfun::read_utf8(.x)
   error <- grep("ERROR 50\\d", content, value = TRUE)
   gsub("^.*(ERROR 50\\d.*)$", "\\1", error)
-})
+}, .progress = TRUE)
 
 length(res)
+res_issue <- purrr::compact(res)
+if (length(res_issue)) range(purrr::map_int(res_issue, length))
 
 # After retries
 res <- purrr::map(files, ~ {
@@ -27,5 +27,5 @@ res <- purrr::map(files, ~ {
 
 length(res)
 res_issue <- purrr::compact(res)
-if (length(res_issue)) range(purrr::map_int(, length))
+if (length(res_issue)) range(purrr::map_int(res_issue, length))
 
