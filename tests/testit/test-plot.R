@@ -112,6 +112,27 @@ if (requireNamespace("ragg", quietly = TRUE) &&
   )
 }
 
+if (requireNamespace('portable', quietly = TRUE) &&
+    !has_error({portable::portable_pdf(tempfile(fileext = '.pdf')); dev.off()})) {
+  assert(
+    'chunk_device() correctly opens the portable::portable_pdf device with dev.args',
+    {
+      chunk_device(opts_chunk$merge(list(
+        dev = 'portable_pdf', dev.args = list(pdf = list(useDingbats = FALSE))
+      )))
+      plot(1:10)
+      dev.off()
+      TRUE
+    }
+  )
+  assert(
+    'the portable_pdf device produces .pdf files',
+    {
+      (dev2ext(list(dev = 'portable_pdf')) %==% 'pdf')
+    }
+  )
+}
+
 # should not error (find `pdf` correctly in grDevices, instead of the one
 # defined below)
 pdf = function() {}

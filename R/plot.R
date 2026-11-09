@@ -13,6 +13,8 @@ auto_exts = c(
 
   svglite = 'svg', gridSVG = 'svg',
 
+  portable_pdf = 'pdf',
+
   ragg_png = 'png', ragg_webp = 'webp',
 
   tikz = 'tex'
@@ -87,6 +89,8 @@ dev_get = function(dev, options = opts_current$get(), dpi = options$dpi[1]) {
     CairoSVG = load_device('CairoSVG', 'Cairo'),
 
     svglite = load_device('svglite', 'svglite'),
+
+    portable_pdf = load_device('portable_pdf', 'portable'),
 
     # similar to load_device(), but the `dpi` argument is named `res`
     ragg_png = function(...) {

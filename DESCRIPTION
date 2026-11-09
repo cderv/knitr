@@ -140,6 +140,7 @@ Suggests:
     otel,
     otelsdk,
     png,
+    portable,
     ragg (>= 1.5.0),
     reticulate (>= 1.4),
     RSQLite,
@@ -157,6 +158,7 @@ Suggests:
     webshot,
     rstudioapi,
     svglite
+Remotes: r-lib/portable
 License: GPL
 URL: https://yihui.org/knitr/
 BugReports: https://github.com/yihui/knitr/issues

@@ -479,6 +479,13 @@ chunk_device = function(options, record = TRUE, tmp = tempfile()) {
     cairo_pdf = function() open_dev(grDevices::cairo_pdf),
     svg       = function() open_dev(grDevices::svg),
     svglite   = function() open_dev(svglite::svglite, filter = TRUE),
+    # portable_pdf() has no `...` and names its first argument `file`, so it
+    # needs filtering like svglite but cannot reuse open_dev()'s `filename` arg
+    portable_pdf = function() {
+      fun = portable::portable_pdf
+      dargs = match_dargs(get_dargs(dev.args, 'portable_pdf'), fun)
+      do.call(fun, c(list(file = tmp, width = width, height = height), dargs))
+    },
     tikz      = function() {
       dargs = c(list(
         file = tmp, width = width, height = height
